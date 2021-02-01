@@ -94,7 +94,7 @@ median(5, 4, 6, 4, 6)
 4 < 5
 4 != 5
 4 == 5
-
+4 == 4
 ```
 
 ### Objects
@@ -177,12 +177,17 @@ Two single ingredient recipes, baked at the same time:
 recipe2 <- function(x){
   mix1 <- x*2
   mix2 <- x/2
+  
+  # A list is a vector with more than 1 object
+  # mix1 = mix1 here we're just calling the objects inside the list by their names. We could also do     m1 = mix1. 
   return(list(mix1 = mix1, #comma indicates we continue onto the next line
               mix2 = mix2))
 }
 
 doublesimplemeal <- recipe2(6)
 doublesimplemeal
+
+# $ in the result just shows that you have different objects inside the mix. It serves to asses an object inside the mix. Min 4:30. 
 ```
 
 Two double ingredient recipes, baked at the same time: 
@@ -200,15 +205,10 @@ doublecomplexmeal$mix1
 ```
 
 Make a recipe based on the ingredients you have
-```{r}
-recipe4 <- function(x) {
-  if(x < 3) {
-    x*2
-  } 
-  else {
-    x/2
-  }
-}
+```{r if conditions}
+
+# name <- function(x) {if(condition) {result} else {other result} }
+recipe4 <- function(x) {if(x < 3) {x*2} else {x/2} }
 
 recipe5 <- function(x) {
   if(x < 3) {
@@ -225,6 +225,7 @@ meal <- recipe4(4); meal
 meal2 <- recipe4(2); meal2
 meal3 <- recipe5(3); meal3
 
+# ifelse(condition, true, false)
 recipe6 <- function(x){
   ifelse(x<3, x*2, x/2) #log_exp, if TRUE, if FALSE
   
