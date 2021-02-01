@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2: Coding Basics"
-author: "Student Name"
+author: "Camila Zarate Ospina"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -18,50 +18,95 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4. When you have completed the assignment, **Knit** the text and code into a single PDF file.
 5. After Knitting, submit the completed exercise (PDF file) to the dropbox in Sakai. Add your first and last name into the file name (e.g., "FirstLast_A02_CodingBasics.Rmd") prior to submission.
 
-
-
 ## Basics Day 1
 
 1. Generate a sequence of numbers from one to 100, increasing by fours. Assign this sequence a name. 
 
+```{r sequence}
+# from, to, by
+sequence <- seq(1, 100, 4) 
+sequence
+```
+
 2. Compute the mean and median of this sequence. 
 
+```{r}
+meanseq <- mean(sequence)
+medianseq <- median(sequence)
+
+meanseq
+medianseq
+```
+
 3. Ask R to determine whether the mean is greater than the median. 
+
+```{r conditional}
+
+meanseq > medianseq
+
+```
 
 4. Insert comments in your code to describe what you are doing.
 
 ```{r}
-#1. 
+#1. Used the command seq to generate the sequence requested, following the "from, to, by" form. 
 
-#2. 
+#2. Assigned the operation to obtain the mean and the median of the sequence to two objects: meanseq and medianseq, respectively.
 
-#3. 
+#3. Used the command > and the objects created in the previous step to determine if one was greater than the other. 
 
 ```
 
 ## Basics Day 2
-
 5. Create a series of vectors, each with four components, consisting of (a) names of students, (b) test scores out of a total 100 points, and (c) whether or not they have passed the test (TRUE or FALSE) with a passing grade of 50.
+
+```{r create vectors}
+
+names <- c("Amrita", "Natalia", "Megan", "Camila")
+testscores <- c(40, 70, 80, 90)
+pass <- c(FALSE, TRUE, TRUE, TRUE)
+
+```
 
 6. Label each vector with a comment on what type of vector it is.
 
+```{r vector classes}
+
+class(names) 
+class(testscores)
+class(pass)
+
+```
+
 7. Combine each of the vectors into a data frame. Assign the data frame an informative name.
+
+```{r vectors into dataframe}
+
+examresults.df<-data.frame(names, testscores, pass)
+
+```
 
 8. Label the columns of your data frame with informative titles.
 
-```{r}
+```{r name dataframe columns and show dataframe}
+
+names(examresults.df) <- c("Student name", "Test score", "Pass?")
+View(examresults.df)
 
 ```
 
 9. QUESTION: How is this data frame different from a matrix?
 
-> Answer: 
+> Answer: A matrices contain elements of the same type, and a data frame can contain elements of different types, in our case, characters, numeric and logical.
 
 10. Create a function with an if/else statement. Your function should determine whether a test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. Hint: Use `print`, not `return`. The name of your function should be informative.
 
 11. Apply your function to the vector with test scores that you created in number 5. 
 
 ```{r}
+
+score <- function(testscores){ifelse(testscores>49, TRUE, FALSE)}
+score(100)
 
 ```
 
