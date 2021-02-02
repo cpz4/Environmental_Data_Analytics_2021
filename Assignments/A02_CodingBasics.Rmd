@@ -51,7 +51,7 @@ meanseq > medianseq
 ```{r}
 #1. Used the command seq to generate the sequence requested, following the "from, to, by" form. 
 
-#2. Assigned the operation to obtain the mean and the median of the sequence to two objects: meanseq and medianseq, respectively.
+#2. Used the funcion mean and median to obtain the mean and the median of the sequence, and assigned that opration to two objects: meanseq and median seq, respectively. 
 
 #3. Used the command > and the objects created in the previous step to determine if one was greater than the other. 
 
@@ -75,6 +75,9 @@ pass <- c(FALSE, TRUE, TRUE, TRUE)
 class(names) 
 class(testscores)
 class(pass)
+names # character
+testscores #numeric
+pass # logical 
 
 ```
 
@@ -97,7 +100,7 @@ View(examresults.df)
 
 9. QUESTION: How is this data frame different from a matrix?
 
-> Answer: A matrices contain elements of the same type, and a data frame can contain elements of different types, in our case, characters, numeric and logical.
+> Answer: A matrix contains elements of the same type, and a data frame can contain elements of different types, in our case, characters, numeric and logical.
 
 10. Create a function with an if/else statement. Your function should determine whether a test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. Hint: Use `print`, not `return`. The name of your function should be informative.
 
@@ -105,11 +108,17 @@ View(examresults.df)
 
 ```{r}
 
-score <- function(testscores){ifelse(testscores>49, TRUE, FALSE)}
-score(100)
+# name <- function(object)   {ifelse(condition, result if true, result if false)}
+score <- function(testscores){ifelse(testscores>49, "TRUE", "FALSE")}
+score(testscores)
+
+# name <- function(x)          {if(condition) {result} else {other result} }
+# score1 <- function(testscores){if(testscores > 49) {"TRUE"} else {"FALSE"}}
+# score1(testscores)
 
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer: 
+> Answer: The operation "ifelse" works and the condition is asked to the 4 elements (4 test scores). When using "if else" separated, there's an error showing that "the condition has length > 1 and only the first element will be used", meaning that the condition is only being asked to the first element in test scores (the first test score) and not the 4 test scores I am evaluating. 
+
