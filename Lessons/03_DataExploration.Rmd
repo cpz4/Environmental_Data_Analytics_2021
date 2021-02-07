@@ -35,7 +35,7 @@ If your working directory is not set to the folder you want, you have several op
 
 ```{r}
 # Absolute file path is commented out
-setwd("/Users/lmm89/OneDrive/Duke_University/7_Spring2021/ENV872_EDA/GitRepo_EDA_S2021/Environmental_Data_Analytics_2021")
+setwd("/Users/camilazarate/OneDrive - Duke University/2 Second semester/Data analytics/Environmental_Data_Analytics_2021")
 ```
 
 You may change your working directory without coding by going to the Session menu in RStudio and navigating to the Set Working Directory tab. From there, you may select from a series of options to reset your working directory. 
@@ -70,7 +70,7 @@ If a package is already installed, you will need to load it every session. You c
 library(dplyr)
 library(ggplot2)
 
-# Some packages are umbrellas under which other packages are loaded
+# Some packages are umbrellas under which other packages are loaded, meaning that by installing one you're installing multiple packages. 
 #install.packages("tidyverse")
 library(tidyverse)
 
@@ -78,7 +78,7 @@ library(tidyverse)
 
 Question: What happens in the console when you load a package?
 
-> Answer: 
+> Answer: It shows the packages being installed, including all the packages installed with the umbrella.
 
 ### Import your datasets
 
@@ -100,7 +100,7 @@ Commons functions to import datasets and store as data frames are *read.table()*
 #read.csv("/Users/lmm89/OneDrive/Duke_University/7_Spring2021/ENV872_EDA/GitRepo_EDA_S2021/Environmental_Data_Analytics_2021/Data/Raw/USGS_Site02085000_Flow_Raw.csv")
 
 # Relative file path (friendly for users regardless of machine)
-USGS.flow.data <- read.csv("../Data/Raw/USGS_Site02085000_Flow_Raw.csv")   
+USGS.flow.data <- read.csv("./Data/Raw/USGS_Site02085000_Flow_Raw.csv")   
 #For knitting the .Rmd file you need to added an extra "." to the relative path
 # R Markdown documents are compiled in separate R sessions to enhance reproducibility, so you current R console has nothing to do with the compilation of the R Markdown documents.
 
@@ -129,6 +129,7 @@ class(USGS.flow.data)
 colnames(USGS.flow.data)
 
 # Rename columns
+# Create a vector with the name of each column using function c: c is short for column bind. 
 colnames(USGS.flow.data) <- c("agency_cd", "site_no", "datetime", 
                               "discharge.max", "discharge.max.approval", 
                               "discharge.min", "discharge.min.approval", 
@@ -136,13 +137,14 @@ colnames(USGS.flow.data) <- c("agency_cd", "site_no", "datetime",
                               "gage.height.max", "gage.height.max.approval", 
                               "gage.height.min", "gage.height.min.approval", 
                               "gage.height.mean", "gage.height.mean.approval")
-str(USGS.flow.data)
-dim(USGS.flow.data)
+str(USGS.flow.data) #
+dim(USGS.flow.data) #dimension
 length(USGS.flow.data)
 
 head(USGS.flow.data)
 head(USGS.flow.data, 10)
 tail(USGS.flow.data, 5)
+# use matrix notation to access specific parts. rows 30000 to 30005 from columns 3, 8, 14. 
 USGS.flow.data[30000:30005, c(3, 8, 14)]
 
 class(USGS.flow.data$datetime)
@@ -171,6 +173,8 @@ Question: What types of research questions might make it favorable to remove NAs
 > Answer: 
 
 ```{r removeNA}
+# Create a new object to store the data without NAs. 
+# This removes all rows that have NAs. 
 USGS.flow.data.complete <- na.omit(USGS.flow.data)
 dim(USGS.flow.data)
 dim(USGS.flow.data.complete)
@@ -201,39 +205,40 @@ In some cases when dates are provided as integers, you may need to provide an or
 ```{r formatDate}
 help(as.Date)
 
-
+#datasetName$columnWithDates <- as.Date(datasetName$columnWithDates, format = specify)
 USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%m/%d/%y") 
 ```
 
 Note that for every date prior to 1969, R has assigned the date in the 2000s rather than the 1900s. This can be fixed with an `ifelse` statement inside a function. Run through the code below and write what is happening in the comment above each line.
 
 ```{r fixformartDate}
-# 
-USGS.flow.data$datetime <- format(USGS.flow.data$datetime, "%y%m%d")
+# Select the column datetime from dataset USGS.flow.data. 
+# Use the function format to establish the format of the date: %y%m%d
+#This changes the type from date to character. 
+USGS.flow.data$datetime <- format(USGS.flow.data$datetime, "%y%m%d") 
 
-#
-create.early.dates <- (function(d) {
-       paste0(ifelse(d > 191226,"19","20"),d)
-       })
-#
+# Error is: All years previous to 1969, R assigned the first two digits to 20 instead of 19. So we have years like 2068. 
+# paste0 glues strings.  
+# For all data greater than 191226, paste a 19 instead of a 20.  
+create.early.dates <- (function(d) { paste0(ifelse(d > 191226,"19","20"),d)})
+# Here we add the 19 to those initial observations. "19271001". 
 USGS.flow.data$datetime <- create.early.dates(USGS.flow.data$datetime)
 
-#
+# Now that the data has been fixed, we change from chr type to data. 
 USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%Y%m%d") 
 
 ```
 
-## Saving datasets
+## Saving datasets. Store processed data in your local machine. 
 
 We just edited our raw dataset into a processed form. We may want to return to this processed dataset later, which will be easier to do if we save it as a spreadsheet. 
 
 
 ```{r savingdata}
 # Note the added "." again for .Rmd 
-write.csv(USGS.flow.data, file = "../Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
+write.csv(USGS.flow.data, file = "./Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
 
 ```
-
 
 ## Tips and Tricks
 
