@@ -208,7 +208,7 @@ Make a recipe based on the ingredients you have
 ```{r if conditions}
 
 # name <- function(x) {if(condition) {result} else {other result} }
-recipe4 <- function(x) {if(x < 3) {x*2} else {x/2} }
+recipe4 <- function(x) {if(x < 3)     {x*2}   else {x/2}          }
 
 recipe5 <- function(x) {
   if(x < 3) {
