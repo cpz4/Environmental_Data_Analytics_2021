@@ -1,3 +1,4 @@
+
 ---
 title: "4: Part 1 - Data Wrangling"
 author: "Environmental Data Analytics | John Fay and Luana Lima | Developed by Kateri Salk"
@@ -69,17 +70,18 @@ Here are the relevant commands used in the `filter` function. Add some notes to 
 `<=`
 `>`
 `>=`
-`&`
-`|`
+`&` and (both to be true)
+`|` or (one or the other)
 
 ```{r}
 class(NTL.phys.data$lakeid)
 class(NTL.phys.data$depth)
 
-# matrix filtering
+# matrix filtering                      # filtering only the rows that have 0 on column depth. 
 NTL.phys.data.surface1 <- NTL.phys.data[NTL.phys.data$depth == 0,]
 
 # dplyr filtering
+# subset                  filter(dataset, column == characteristic) 
 NTL.phys.data.surface2 <- filter(NTL.phys.data, depth == 0)
 NTL.phys.data.surface3 <- filter(NTL.phys.data, depth < 0.25)
 
@@ -93,11 +95,17 @@ dim(NTL.phys.data.surface3)
 
 # Choose multiple conditions to filter
 summary(NTL.phys.data$lakename)
+# take Paul Lake OR Peter Lake
 NTL.phys.data.PeterPaul1 <- filter(NTL.phys.data, lakename == "Paul Lake" | lakename == "Peter Lake")
+
+# Filtering the lakes we're not interested into to get Peter or Paul. 
+# When you just want to remove one of the lakes from the dataset. 
 NTL.phys.data.PeterPaul2 <- filter(NTL.phys.data, lakename != "Central Long Lake" & 
                                      lakename != "Crampton Lake" & lakename != "East Long Lake" &
                                      lakename != "Hummingbird Lake" & lakename != "Tuesday Lake" &
                                      lakename != "Ward Lake" & lakename != "West Long Lake")
+
+# %in% useful to select based on more than 2 elements. 
 NTL.phys.data.PeterPaul3 <- filter(NTL.phys.data, lakename %in% c("Paul Lake", "Peter Lake"))
 
 # Choose a range of conditions of a numeric or integer variable
@@ -132,6 +140,7 @@ NTL.phys.data.depth.descending <- arrange(NTL.phys.data, desc(depth))
 # Exercise: 
 # Arrange NTL.phys.data by temperature, in descending order. 
 # Which dates, lakes, and depths have the highest temperatures?
+NTL.phys.data.temperature.descending <- arrange(NTL.phys.data, desc(temperature_C))
 
 
 ```
@@ -139,7 +148,8 @@ NTL.phys.data.depth.descending <- arrange(NTL.phys.data, desc(depth))
 
 Selecting allows us to choose certain columns (variables) in our dataset.
 
-```{r}
+```{r creating a subset from a dataset}
+#                             (dataset, column, range of columns)
 NTL.phys.data.temps <- select(NTL.phys.data, lakename, sampledate:temperature_C)
 
 ```
@@ -148,7 +158,7 @@ NTL.phys.data.temps <- select(NTL.phys.data, lakename, sampledate:temperature_C)
 Mutating allows us to add new columns that are functions of existing columns. Operations include addition, subtraction, multiplication, division, log, and other functions.
 
 ```{r}
-
+# dataset you want to add things to <- mutate(existing dataset, new column = whatever the new colums will be equal to)
 NTL.phys.data.temps <- mutate(NTL.phys.data.temps, temperature_F = (temperature_C*9/5) + 32)
 
 ```
@@ -159,13 +169,18 @@ A package that makes coercing date much easier is `lubridate`. A guide to the pa
 
 ```{r}
 # add a month column to the dataset
+#                                                             new column created
 NTL.phys.data.PeterPaul1 <- mutate(NTL.phys.data.PeterPaul1, month = month(sampledate)) 
 
 # reorder columns to put month with the rest of the date variables
+#                                                         columns I want first, month, rest of the columns. 
 NTL.phys.data.PeterPaul1 <- select(NTL.phys.data.PeterPaul1, lakeid:daynum, month, sampledate:comments)
 
 # find out the start and end dates of the dataset
+# Take first row [1] from column from dataset, then take last row [21613]
+# dataset$column[row #]
 interval(NTL.phys.data.PeterPaul1$sampledate[1], NTL.phys.data.PeterPaul1$sampledate[21613])
+# better way to do it
 interval(first(NTL.phys.data.PeterPaul1$sampledate), last(NTL.phys.data.PeterPaul1$sampledate))
 ```
 
@@ -177,9 +192,12 @@ Sometimes we will want to perform multiple functions on a single dataset on our 
 Let's say we want to take our raw dataset (NTL.phys.data), *then* filter the data for Peter and Paul lakes, *then* select temperature and observation information, and *then* add a column for temperature in Fahrenheit: 
 
 ```{r}
+
+# new dataset <- old %in% modifications. Only conditions inside since we already mentioned our original dataset at the beggining. 
+
 NTL.phys.data.processed <- 
-  NTL.phys.data %>%
-  filter(lakename == "Paul Lake" | lakename == "Peter Lake") %>%
+  NTL.phys.data %>% #original data "then"
+  filter(lakename == "Paul Lake" | lakename == "Peter Lake") %>% 
   select(lakename, sampledate:temperature_C) %>%
   mutate(temperature_F = (temperature_C*9/5) + 32)
   
