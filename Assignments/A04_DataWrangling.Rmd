@@ -1,6 +1,6 @@
 ---
 title: "Assignment 4: Data Wrangling"
-author: "Student Name"
+author: "Camila Zarate Ospina"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -25,8 +25,42 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 
 ```{r, message = FALSE}
 #1
+getwd()
+setwd("/Users/camilazarate/OneDrive - Duke University/2 Second semester/Data analytics/Environmental_Data_Analytics_2021")
+library(tidyverse)
+library(lubridate)
+
+PM25_NC2019 <- read.csv("./Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
+PM25_NC2018 <- read.csv("./Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
+
+O3_NC2018 <- read.csv("./Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
+O3_NC2019 <- read.csv("./Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
 
 #2
+colnames(PM25_NC2018)
+head(PM25_NC2018)
+summary(PM25_NC2018)
+str(PM25_NC2018)
+dim(PM25_NC2018)
+
+colnames(PM25_NC2019)
+head(PM25_NC2019)
+summary(PM25_NC2019)
+str(PM25_NC2019)
+dim(PM25_NC2019)
+
+colnames(O3_NC2018)
+head(O3_NC2018)
+summary(O3_NC2018)
+str(O3_NC2018)
+dim(O3_NC2018)
+
+colnames(O3_NC2019)
+head(O3_NC2019)
+summary(O3_NC2019)
+str(O3_NC2019)
+dim(O3_NC2019)
+
 ```
 
 ## Wrangle individual datasets to create processed files.
@@ -37,15 +71,44 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 
 ```{r}
 #3
+class(PM25_NC2018$Date)
+PM25_NC2018$Date <- as.Date(PM25_NC2018$Date, format = "%m/%d/%Y") 
+
+class(PM25_NC2019$Date)
+PM25_NC2019$Date <- as.Date(PM25_NC2019$Date, format = "%m/%d/%Y") 
+
+class(O3_NC2018$Date)
+O3_NC2018$Date <- as.Date(O3_NC2018$Date, format = "%m/%d/%Y") 
+
+class(O3_NC2019$Date)
+O3_NC2019$Date <- as.Date(O3_NC2019$Date, format = "%m/%d/%Y") 
 
 #4
+PM25_NC2018_select <- select(PM25_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+
+PM25_NC2019_select <- select(PM25_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+
+PM25_NC2019_select <- select(PM25_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+
+O3_NC2018_select <- select(O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+
+O3_NC2019_select <- select(O3_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
 #5
+PM25_NC2018_select <- mutate(PM25_NC2018_select, AQS_PARAMETER_DESC = "PM2.5")
+PM25_NC2019_select <- mutate(PM25_NC2019_select, AQS_PARAMETER_DESC = "PM2.5")
 
-#6
-
+#6 Save processed datasets 
+write.csv(PM25_NC2018_select, row.names = FALSE, file =
+            "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(PM25_NC2019_select, row.names = FALSE, file =
+            "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
+write.csv(O3_NC2018_select, row.names = FALSE, file =
+            "./Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(O3_NC2019_select, row.names = FALSE, file =
+            "./Data/Processed/EPAair_O3_NC2019_processed.csv")
+          
 ```
-
 
 ## Combine datasets
 7. Combine the four datasets with `rbind`. Make sure your column names are identical prior to running this code. 
@@ -61,11 +124,28 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1718_Processed.csv"
 
 ```{r}
-#7
+#7 Combine datasets 
+PM25_2018 <- read.csv("./Data/Processed/EPAair_PM25_NC2018_processed.csv", stringsAsFactors = TRUE)
+PM25_2019 <- read.csv("./Data/Processed/EPAair_PM25_NC2019_processed.csv", stringsAsFactors = TRUE)
+O3_2018 <- read.csv("./Data/Processed/EPAair_O3_NC2018_processed.csv", stringsAsFactors = TRUE)
+O3_2019 <- read.csv("./Data/Processed/EPAair_O3_NC2019_processed.csv", stringsAsFactors = TRUE)
 
-#8
+EPA_Air <- rbind(PM25_2019, PM25_2018, O3_2018, O3_2019)
+
+#8 Wrangle dataset
+EPA_Air_Modified <- EPA_Air %>% 
+  filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School", "Castle Hayne", "Pitt Agri. Center", "Bryson City", "Millbrook School")) %>% 
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>% 
+  summarise(meanAQI = mean (DAILY_AQI_VALUE), 
+            meanLatitude = mean(SITE_LATITUDE),
+            meanLongitud = mean(SITE_LONGITUDE)) %>% 
+  mutate(Month = month(Date)) %>% 
+  mutate(Year = year(Date))
+
+EPA_Air_Modified$Date <- as.Date
 
 #9
+EPA_Air_
 
 #10
 
