@@ -17,7 +17,7 @@ editor_options:
 
 ```{r, message = FALSE}
 getwd()
-library(dplyr)
+library(plyr)
 library(tidyverse)
 library(lubridate)
 NTL.phys.data.PeterPaul <- read.csv("./Data/Processed/NTL-LTER_Lake_ChemistryPhysics_PeterPaul_Processed.csv")
@@ -152,6 +152,8 @@ Litter.2019 <- rbind(Litter.June2016, Litter.July2016, Litter.August2016)
 However, there are 20 months in this dataset, so importing all these files individually would be tedious to code. Here is a more efficient way to import and combine all files.
 
 ```{r}
+# create a list
+#                         path to the folders, patterns (kind of files), full names of the file
 LitterFiles = list.files(path = "./Data/Raw/NIWO_Litter/", pattern="*.csv", full.names=TRUE)
 LitterFiles
 
