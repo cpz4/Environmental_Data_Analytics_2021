@@ -98,7 +98,7 @@ O3plot7 <- ggplot(EPAair, aes(x = Date, y = Ozone)) +
   geom_hline(yintercept = 50, lty = 2) +
   geom_hline(yintercept = 100, lty = 2) +
   geom_point(alpha = 0.5, size = 1.5) +
-  geom_text(x = as.Date("2020-01-01"), y = 45, label = "good", hjust = 1, fontface = "bold") +   # hjust = 1 means left align
+  geom_text(x = as.Date("2020-01-01"), y = 45, label = "good", hjust = 1, fontface = "bold") +   # hjust = 1 means left align, hjust = horiozontal justification. 
   geom_text(x = as.Date("2020-01-01"), y = 95, label = "moderate", hjust = 1, fontface = "bold") +
   geom_text(x = as.Date("2020-01-01"), y = 120, label = "unhealthy (sensitive groups)", hjust = 1, fontface = "bold") +
   scale_x_date(limits = as.Date(c("2018-01-01", "2019-12-31")), 
@@ -175,7 +175,7 @@ print(NvsP)
 NvsP2 <-
   ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = tn_ug, color = depth, shape = lakename)) +
   geom_point(alpha = 0.7, size = 2.5) +
-  #labs() + # change your legend labels here
+  labs(color = "Depth", shape = "Lake name") + # change your legend labels here
   scale_shape_manual(values = c(15, 17)) +
   #scale_color_distiller(palette = "Blues", direction = 1) + # use scale_color_brewer for discrete variables
   scale_color_viridis(option = "magma", direction = -1) +
@@ -208,6 +208,7 @@ A useful guide for aligning plots by axis can be found here: https://wilkelab.or
 ```{r, fig.height = 7, fig.width = 6}
 #install.packages("cowplot")
 library(cowplot)
+#         plots, columns or rows and how many, 
 plot_grid(NvsP2, Nutrientplot, nrow = 2, align = 'h', rel_heights = c(1.25, 1))
 
 ```

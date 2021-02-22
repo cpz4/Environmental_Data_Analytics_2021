@@ -21,7 +21,7 @@ Effective data visualization depends on purposeful choices about graph types. Th
 ```{r, message = FALSE, warning = FALSE}
 getwd()
 library(tidyverse)
-#install.packages("ggridges")
+install.packages("ggridges")
 library(ggridges)
 
 PeterPaul.chem.nutrients <- 
@@ -78,8 +78,9 @@ Here are some commonly used aesthetic types that can be manipulated in ggplot:
 
 ```{r, fig.height = 3, fig.width = 4, warning = FALSE}
 # Scatterplot
+# figure(dataset, easthetics(x = , y =))
 ggplot(EPAair, aes(x = Date, y = Ozone)) + 
-  geom_point()
+  geom_point() # how do you want the variable to be plotted
 
 O3plot <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone))
@@ -87,12 +88,14 @@ print(O3plot)
 
 # Fix this code
 O3plot2 <- ggplot(EPAair) +
-  #geom_point(aes(x = Date, y = Ozone, color = "blue"))
+  #geom_point(aes(x = Date, y = Ozone, color = "blue")) #wrong, it understands that you're adding another leyend to the plot, not specifying the color. 
   geom_point(aes(x = Date, y = Ozone), color = "blue")
 print(O3plot2)
 
 # Add additional variables
 # How could you automatically assign a marker color to a variable? 
+# Assign a different shape based on the year. Circle to 2018, triangle to 2019...
+# Color. All the info from the same site will have the same color. 
 PMplot <- 
   ggplot(EPAair, aes(x = Month, y = PM2.5, shape = as.factor(Year), color = Site.Name)) +
   geom_point()
@@ -102,7 +105,7 @@ print(PMplot)
 PMplot.faceted <-
   ggplot(EPAair, aes(x = Month, y = PM2.5, shape = as.factor(Year))) +
   geom_point() +
-  facet_wrap(vars(Site.Name), nrow = 3)
+  facet_wrap(vars(Site.Name), nrow = 3) # one plot for each site, 
 print(PMplot.faceted)
 
 # Filter dataset within plot building and facet by multiple variables
@@ -147,7 +150,7 @@ tempvsdepth <-
   ggplot(PeterPaul.chem.nutrients, aes(x = temperature_C, y = depth)) +
   #ggplot(PeterPaul.chem.nutrients, aes(x = temperature_C, y = depth, color = daynum)) +
   geom_point() +
-  scale_y_reverse()
+  scale_y_reverse() # reverses the y axis, 0 goes on top. 
 print(tempvsdepth)
 
 NvsP <-
@@ -168,17 +171,21 @@ What might be more effective ways to display the information? Navigate to the bo
 # Box and whiskers plot
 Nutrientplot3 <-
   ggplot(PeterPaul.chem.nutrients.gathered, aes(x = lakename, y = concentration)) +
-  geom_boxplot(aes(color = nutrient)) # Why didn't we use "fill"?
+  geom_boxplot(aes(color = nutrient)) # Why didn't we use "fill"? Color is about the countour, fill is the filling. 
 print(Nutrientplot3)
 
 # Dot plot
 Nutrientplot4 <-
   ggplot(PeterPaul.chem.nutrients.gathered, aes(x = lakename, y = concentration)) +
   geom_dotplot(aes(color = nutrient, fill = nutrient), binaxis = "y", binwidth = 1, 
-               stackdir = "center", position = "dodge", dotsize = 2) #
+               stackdir = "center", position = "dodge", dotsize = 2) 
 print(Nutrientplot4)
+# binaxis means that we're stacking the obervations over Y. 
+# dodge: so data points don't overlay each other but are spead out going to the sides. 
+# You can see that the concentration of tnug is more spread across concentration values, 
 
 # Violin plot
+# Show you a density plot, the distribution of the data
 Nutrientplot5 <-
   ggplot(PeterPaul.chem.nutrients.gathered, aes(x = lakename, y = concentration)) +
   geom_violin(aes(color = nutrient)) #
