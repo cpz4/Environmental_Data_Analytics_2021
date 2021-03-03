@@ -89,7 +89,7 @@ print(O3plot)
 # Fix this code
 O3plot2 <- ggplot(EPAair) +
   #geom_point(aes(x = Date, y = Ozone, color = "blue")) #wrong, it understands that you're adding another leyend to the plot, not specifying the color. 
-  geom_point(aes(x = Date, y = Ozone), color = "blue")
+  geom_point(aes(x = Date, y = Ozone), color = "blue") # closed parenthesis and specify color outside
 print(O3plot2)
 
 # Add additional variables
@@ -102,6 +102,7 @@ PMplot <-
 print(PMplot)
 
 # Separate plot with facets
+# face wrap: 
 PMplot.faceted <-
   ggplot(EPAair, aes(x = Month, y = PM2.5, shape = as.factor(Year))) +
   geom_point() +
@@ -115,7 +116,7 @@ PMplot.faceted2 <-
          aes(x = Month, y = PM2.5)) + 
   geom_point() +
   facet_grid(Site.Name ~ Year) 
-print(PMplot.faceted2)
+print(PMplot.faceted2) 
 
 # Plot true time series with geom_line
 PMplot.line <- 
